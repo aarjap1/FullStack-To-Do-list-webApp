@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import "../css/Todo.css";
 
 const Todo = () => {
   const [todos, setTodos] = useState([]);
@@ -12,7 +13,6 @@ const Todo = () => {
     fetch(backendUrl)
       .then((response) => response.json())
       .then((data) => {
-        console.log("Fetched todos:", data);
         setTodos(data);
       });
   }, []);
@@ -27,7 +27,6 @@ const Todo = () => {
       })
         .then((response) => response.json())
         .then((data) => {
-          console.log("Added todo:", data);
           setTodos([...todos, data]);
         })
         .catch((error) => console.error("Error adding todo:", error));
@@ -44,7 +43,6 @@ const Todo = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("Updated todo:", data); // Logging
         const updatedTodos = todos.map((todo) =>
           todo.id === id ? data : todo
         );
@@ -52,28 +50,36 @@ const Todo = () => {
         setEditId(null);
         setEditText("");
       })
-      .catch((error) => console.error("Error updating todo:", error)); // Error handling
+      .catch((error) => console.error("Error updating todo:", error));
   };
 
   const deleteTodo = (id) => {
     fetch(`${backendUrl}/${id}`, { method: "DELETE" })
       .then(() => {
-        console.log("Deleted todo with id:", id); // Logging
         setTodos(todos.filter((todo) => todo.id !== id));
       })
-      .catch((error) => console.error("Error deleting todo:", error)); // Error handling
+      .catch((error) => console.error("Error deleting todo:", error));
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      addTodo();
+    }
   };
 
   return (
-    <div>
+    <div className="todo-container">
       <h1>Todo List</h1>
-      <input
-        type="text"
-        value={newTodo}
-        onChange={(e) => setNewTodo(e.target.value)}
-        placeholder="Add new todo"
-      />
-      <button onClick={addTodo}>Add</button>
+      <div>
+        <input
+          type="text"
+          value={newTodo}
+          onChange={(e) => setNewTodo(e.target.value)}
+          placeholder="Add new todo"
+          onKeyPress={handleKeyPress}
+        />
+        <button onClick={addTodo}>Add</button>
+      </div>
       <ul>
         {todos.map((todo) => (
           <li key={todo.id}>
@@ -84,20 +90,30 @@ const Todo = () => {
                   value={editText}
                   onChange={(e) => setEditText(e.target.value)}
                 />
-                <button onClick={() => updateTodo(todo.id)}>Save</button>
+                <button className="edit" onClick={() => updateTodo(todo.id)}>
+                  Save
+                </button>
               </>
             ) : (
               <>
                 {todo.text}
-                <button
-                  onClick={() => {
-                    setEditId(todo.id);
-                    setEditText(todo.text);
-                  }}
-                >
-                  Edit
-                </button>
-                <button onClick={() => deleteTodo(todo.id)}>Delete</button>
+                <div>
+                  <button
+                    className="edit"
+                    onClick={() => {
+                      setEditId(todo.id);
+                      setEditText(todo.text);
+                    }}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="delete"
+                    onClick={() => deleteTodo(todo.id)}
+                  >
+                    Delete
+                  </button>
+                </div>
               </>
             )}
           </li>
