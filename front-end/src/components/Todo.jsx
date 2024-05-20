@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../css/Todo.css";
-
+import todologo from "../images/logo.png";
 const Todo = () => {
   const [todos, setTodos] = useState([]);
   const [newTodo, setNewTodo] = useState("");
@@ -68,58 +68,61 @@ const Todo = () => {
   };
 
   return (
-    <div className="todo-container">
-      <h1>Todo List</h1>
-      <div>
-        <input
-          type="text"
-          value={newTodo}
-          onChange={(e) => setNewTodo(e.target.value)}
-          placeholder="Add new todo"
-          onKeyPress={handleKeyPress}
-        />
-        <button onClick={addTodo}>Add</button>
+    <>
+      <div className="todo-container">
+        <img src={todologo} alt="main-logo" className="logo" />
+        <h1>Todo List</h1>
+        <div>
+          <input
+            type="text"
+            value={newTodo}
+            onChange={(e) => setNewTodo(e.target.value)}
+            placeholder="Add new todo"
+            onKeyPress={handleKeyPress}
+          />
+          <button onClick={addTodo}>Add</button>
+        </div>
+        <ul>
+          {todos.map((todo) => (
+            <li key={todo.id}>
+              {editId === todo.id ? (
+                <>
+                  <input
+                    type="text"
+                    value={editText}
+                    onChange={(e) => setEditText(e.target.value)}
+                  />
+                  <button className="edit" onClick={() => updateTodo(todo.id)}>
+                    Save
+                  </button>
+                </>
+              ) : (
+                <>
+                  {todo.text}
+                  <div>
+                    <button
+                      className="edit"
+                      onClick={() => {
+                        setEditId(todo.id);
+                        setEditText(todo.text);
+                      }}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="delete"
+                      onClick={() => deleteTodo(todo.id)}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </>
+              )}
+            </li>
+          ))}
+        </ul>
       </div>
-      <ul>
-        {todos.map((todo) => (
-          <li key={todo.id}>
-            {editId === todo.id ? (
-              <>
-                <input
-                  type="text"
-                  value={editText}
-                  onChange={(e) => setEditText(e.target.value)}
-                />
-                <button className="edit" onClick={() => updateTodo(todo.id)}>
-                  Save
-                </button>
-              </>
-            ) : (
-              <>
-                {todo.text}
-                <div>
-                  <button
-                    className="edit"
-                    onClick={() => {
-                      setEditId(todo.id);
-                      setEditText(todo.text);
-                    }}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className="delete"
-                    onClick={() => deleteTodo(todo.id)}
-                  >
-                    Delete
-                  </button>
-                </div>
-              </>
-            )}
-          </li>
-        ))}
-      </ul>
-    </div>
+    </>
   );
 };
 

@@ -92,3 +92,9 @@
 .todo-container li button.delete:hover {
     background-color: #c82333;
 }
+
+
+.logo {
+    position: absolute;
+    width: 100px;
+}
